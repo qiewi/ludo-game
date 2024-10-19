@@ -96,5 +96,5 @@ UI.setTurn(1);
 UI.disableDice();
 UI.enableDice();
 UI.highlightPieces('P1', [0]);
-// UI.unhighlightPieces();
-// UI.setDiceValue(5);
+UI.unhighlightPieces();
+UI.setDiceValue(5);
