@@ -1,3 +1,4 @@
+import { BASE_POSITIONS, HOME_ENTRANCE, HOME_POSITIONS, PLAYERS, SAFE_POSITIONS, START_POSITIONS, STATE, TURNING_POINTS } from './constants.js';
 import { UI } from './UI.js';
 
 export class Ludo {
@@ -165,5 +166,71 @@ export class Ludo {
     setPiecePosition(player, piece, newPosition) {
         this.currentPositions[player][piece] = newPosition;
         UI.setPiecePosition(player, piece, newPosition)
+    }
+
+    movePiece(player, piece, moveBy) {
+        // this.setPiecePosition(player, piece, this.currentPositions[player][piece] + moveBy)
+        const interval = setInterval(() => {
+            this.incrementPiecePosition(player, piece);
+            moveBy--;
+
+            if(moveBy === 0) {
+                clearInterval(interval);
+
+                // check if player won
+                if(this.hasPlayerWon(player)) {
+                    alert(`Player: ${player} has won!`);
+                    this.resetGame();
+                    return;
+                }
+
+                const isKill = this.checkForKill(player, piece);
+
+                if(isKill || this.diceValue === 6) {
+                    this.state = STATE.DICE_NOT_ROLLED;
+                    return;
+                }
+
+                this.incrementTurn();
+            }
+        }, 200);
+    }
+
+    checkForKill(player, piece) {
+        const currentPosition = this.currentPositions[player][piece];
+        const opponent = player === 'P1' ? 'P2' : 'P1';
+
+        let kill = false;
+
+        [0, 1, 2, 3].forEach(piece => {
+            const opponentPosition = this.currentPositions[opponent][piece];
+
+            if(currentPosition === opponentPosition && !SAFE_POSITIONS.includes(currentPosition)) {
+                this.setPiecePosition(opponent, piece, BASE_POSITIONS[opponent][piece]);
+                kill = true
+            }
+        });
+
+        return kill
+    }
+
+    hasPlayerWon(player) {
+        return [0, 1, 2, 3].every(piece => this.currentPositions[player][piece] === HOME_POSITIONS[player])
+    }
+
+    incrementPiecePosition(player, piece) {
+        this.setPiecePosition(player, piece, this.getIncrementedPosition(player, piece));
+    }
+    
+    getIncrementedPosition(player, piece) {
+        const currentPosition = this.currentPositions[player][piece];
+
+        if(currentPosition === TURNING_POINTS[player]) {
+            return HOME_ENTRANCE[player][0];
+        }
+        else if(currentPosition === 51) {
+            return 0;
+        }
+        return currentPosition + 1;
     }
 }
