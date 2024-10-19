@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 .ludo-container {
     width: 450px;
     margin: 20px auto;
@@ -8,6 +12,7 @@
     width: 100%;
     background-image: url('./ludo-bg.jpg');
     background-size: contain;
+    position: relative;
 }
 
 .player-pieces {
@@ -23,12 +28,59 @@
     position: absolute;
 }
 
+.player-piece.highlight {
+    cursor: pointer;
+    border: 2px dashed;
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.4);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 [player-id="P1"].player-piece {
     background-color: #2eafff;
 }
 
 [player-id="P2"].player-piece {
     background-color: #00b550;
+}
+
+.player-base {
+    width: 40%;
+    height: 40%;
+    border: 30px solid;
+    position: absolute;
+}
+
+.player-bases [player-id="P1"].player-base {
+    bottom: 0;
+    left: 0;
+    border-color: #1295e7;
+}
+
+.player-bases [player-id="P2"].player-base {
+    top: 0;
+    right: 0;
+    border-color: #049645;
+}
+
+.player-base.highlight {
+    animation: border-blink .7s infinite ease-in-out;
+}
+
+@keyframes border-blink {
+    50% {
+        border-color: rgba(255, 255, 255, 0.8);
+    }
 }
 
 .btn {
